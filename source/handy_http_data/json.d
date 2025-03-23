@@ -6,7 +6,6 @@ module handy_http_data.json;
 import streams;
 import handy_http_primitives.request;
 import handy_http_primitives.response;
-import asdf;
 
 /**
  * Reads a JSON value from the body of the given HTTP request, parsing it using
@@ -18,6 +17,7 @@ import asdf;
  * Returns: The value that was read.
  */
 T readJsonBodyAs(T)(ref ServerHttpRequest request) {
+    import asdf : deserialize, SerdeException;
     try {
         string requestBody = request.readBodyAsString(false);
         return deserialize!T(requestBody);
@@ -39,8 +39,17 @@ T readJsonBodyAs(T)(ref ServerHttpRequest request) {
  */
 void writeJsonBody(T)(ref ServerHttpResponse response, in T bodyContent) {
     import std.conv : to;
+    import std.traits : isArray;
+    import std.json;
+    import asdf : serializeToJson, SerdeException;
     try {
-        string responseBody = serializeToJson(bodyContent);
+        static if (isArray!T && bodyContent.length == 0) {
+            string responseBody = "[]";
+        } else static if (is(T == JSONValue)) {
+            string responseBody = bodyContent.toString();
+        } else {
+            string responseBody = serializeToJson(bodyContent);
+        }
         response.headers.remove("Content-Type");
         response.headers.remove("Content-Length");
         response.headers.add("Content-Type", "application/json");
