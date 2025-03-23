@@ -4,8 +4,9 @@
 	],
 	"copyright": "Copyright © 2025, Andrew Lalis",
 	"dependencies": {
-		"handy-http-primitives": "~>1.4",
-		"asdf": "~>0.7"
+		"asdf": "~>0.7",
+		"dxml": "~>0.4",
+		"handy-http-primitives": "~>1.4"
 	},
 	"description": "Support for common data formats and database operations.",
 	"license": "CC0",
