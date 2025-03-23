@@ -1,0 +1,13 @@
+{
+	"authors": [
+		"Andrew Lalis"
+	],
+	"copyright": "Copyright © 2025, Andrew Lalis",
+	"dependencies": {
+		"handy-http-primitives": "~>1.4",
+		"asdf": "~>0.7"
+	},
+	"description": "Support for common data formats and database operations.",
+	"license": "CC0",
+	"name": "handy-http-data"
+}
