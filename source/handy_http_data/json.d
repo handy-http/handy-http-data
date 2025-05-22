@@ -26,6 +26,19 @@ T readJsonBodyAs(T)(ref ServerHttpRequest request) {
     }
 }
 
+unittest {
+    import handy_http_primitives.builder;
+    ServerHttpRequest request = ServerHttpRequestBuilder()
+        .withBody("{\"key\": \"value\"}")
+        .withHeader("Content-Length", "16")
+        .build();
+    struct TestStruct {
+        string key;
+    }
+    TestStruct testStruct = readJsonBodyAs!TestStruct(request);
+    assert(testStruct.key == "value");
+}
+
 /** 
  * Writes a JSON value to the body of the given HTTP response, serializing it
  * using the ASDF library. Will also set Content-Type and Content-Length
@@ -57,9 +70,25 @@ void writeJsonBody(T)(ref ServerHttpResponse response, in T bodyContent) {
         StreamResult result = response.outputStream.writeToStream(cast(ubyte[]) responseBody);
         if (result.hasError) {
             StreamError err = result.error;
-            throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR, err.message);
+            throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR, cast(string) err.message);
         }
     } catch (SerdeException e) {
         throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.msg, e);
     }
+}
+
+unittest {
+    import handy_http_primitives.builder;
+    ArrayOutputStream!ubyte outputStream = byteArrayOutputStream();
+    ServerHttpResponse response = ServerHttpResponseBuilder()
+        .withOutputStream(&outputStream)
+        .build();
+    struct TestStruct {
+        string key;
+    }
+    TestStruct testStruct = TestStruct("value");
+    writeJsonBody(response, testStruct);
+    assert(response.headers["Content-Type"] == "application/json");
+    const writtenBody = cast(string) outputStream.toArrayRaw();
+    assert(writtenBody == "{\"key\":\"value\"}");
 }

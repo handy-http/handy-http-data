@@ -3,10 +3,10 @@
 	"versions": {
 		"asdf": "0.7.17",
 		"dxml": "0.4.4",
-		"handy-http-primitives": "1.4.0",
+		"handy-http-primitives": "1.6.0",
 		"mir-algorithm": "3.22.3",
 		"mir-core": "1.7.1",
 		"silly": "1.1.1",
-		"streams": "3.5.0"
+		"streams": "3.6.0"
 	}
 }
