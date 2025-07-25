@@ -56,8 +56,13 @@ void writeJsonBody(T)(ref ServerHttpResponse response, in T bodyContent) {
     import std.json;
     import asdf : serializeToJson, SerdeException;
     try {
-        static if (isArray!T && bodyContent.length == 0) {
-            string responseBody = "[]";
+        static if (isArray!T) {
+            string responseBody;
+            if (bodyContent.length == 0) {
+                responseBody = "[]";
+            } else {
+                responseBody = serializeToJson(bodyContent);
+            }
         } else static if (is(T == JSONValue)) {
             string responseBody = bodyContent.toString();
         } else {
